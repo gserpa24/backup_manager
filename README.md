@@ -20,6 +20,24 @@ Sigue estos pasos para instalar el sistema en tu entorno local:
    ```bash
    git clone https://github.com/gserpa24/backup_manager.git
    cd backup_manager
+
+## Uso
+1. **Ingresar a la carpeta scripts**
+   ```bash
+   cd scripts
+2. **Exportar una Máquina Virtual**
+   ```bash
+   ./vm_export.sh
+3. **Verificar Integridad de archivos**
+   ```bash
+   ./verificar.sh
+4. **Comprimir archivos exportados**
+   ```bash
+   ./comprimir.sh
+5. **Enviar archivos al NAS**
+   ```bash
+   ./scp_nas.sh
+
 ## Autores
 
 - **[Gustavo Luis Serpa Rengifo]** - Desarrollador principal - [GitHub][(https://github.com/gserpa24)]
