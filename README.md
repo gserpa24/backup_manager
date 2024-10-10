@@ -8,7 +8,7 @@ El **Sistema de Backup** es una solución automatizada que permite realizar copi
 
 - **Exportación de VMs**: Exporta máquinas virtuales en formatos OVF/OVA mediante `govc`.
 - **Verificación de Integridad**: Verifica la integridad de los archivos exportados (.mf) antes de la compresión.
-- **Compresión**: Comprime los archivos exportados en formato `.tar.gz` para optimizar el espacio de almacenamiento.
+- **Compresión**: Comprime los archivos exportados en formato `.zip` para optimizar el espacio de almacenamiento.
 - **Transferencia a NAS**: Envío automatizado de archivos comprimidos a servidores NAS usando `smbclient` para transferencia segura.
 - **Automatización con Scripts**: Los procesos de copia y restauración están automatizados mediante scripts en bash.
 
