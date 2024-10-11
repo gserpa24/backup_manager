@@ -17,7 +17,7 @@ def home(request):
 def run_task(request):
     if request.method == 'POST':
         task = request.POST.get('task')
-        script_path = f'/path/to/scripts/{TASKS[task]}'  # Ruta a tus scripts
+        script_path = f'tasks/scripts/{TASKS[task]}'  # Ruta a tus scripts
 
         try:
             # Ejecuta el script seleccionado
