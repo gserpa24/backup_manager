@@ -5,15 +5,15 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
 
-def register_view(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')  # Redirigir al login después de registrarse
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'accounts/register.html', {'form': form})
+# register_view(request):
+#    if request.method == 'POST':
+#        form = CustomUserCreationForm(request.POST)
+#        if form.is_valid():
+#            form.save()
+#            return redirect('login')  # Redirigir al login después de registrarse
+#    else:
+#        form = CustomUserCreationForm()
+#    return render(request, 'accounts/register.html', {'form': form})
 
 
 def login_view(request):
@@ -29,7 +29,7 @@ def login_view(request):
     else:
         form = CustomAuthenticationForm()
 
-    return render(request, 'accounts/login.html', {'form': form})
+    return render(request, 'login.html', {'form': form})
 
 @login_required
 def home_view(request):
