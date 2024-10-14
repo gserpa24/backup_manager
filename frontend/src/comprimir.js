@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const comprimir = () => {
+const Comprimir = () => {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -34,4 +34,4 @@ const comprimir = () => {
   );
 };
 
-export default comprimir;
+export default Comprimir;

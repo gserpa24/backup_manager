@@ -1,5 +1,5 @@
 import React from 'react';
-import ExportVM from './comprimir';
+import Comprimir from './comprimir';
 
 function App() {
   return (
