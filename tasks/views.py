@@ -9,7 +9,7 @@ TASKS = {
     'enviar_nas': 'scp_nas.sh'
 }
 
+
 @login_required
 def home(request):
     return render(request, 'home.html')
-
