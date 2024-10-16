@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 import subprocess
 
 # Tareas disponibles
@@ -9,11 +10,11 @@ TASKS = {
     'enviar_nas': 'scp_nas.sh'
 }
 
-
+@login_required
 def home(request):
     return render(request, 'home.html', {'tasks': TASKS})
 
-
+@login_required
 def run_task(request):
     if request.method == 'POST':
         task = request.POST.get('task')
