@@ -1,11 +1,1 @@
 <h1>Seleccione una tarea de Backup</h1>
-<form method="POST" action="{% url 'run_task' %}">
-    {% csrf_token %}
-    <label for="task">Tarea:</label>
-    <select name="task">
-        {% for task, script in tasks.items %}
-            <option value="{{ task }}">{{ task }}</option>
-        {% endfor %}
-    </select>
-    <button type="submit">Ejecutar</button>
-</form>
