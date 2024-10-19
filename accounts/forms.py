@@ -10,6 +10,13 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = ('username', 'email', 'password1', 'password2')
 
+    def __init__(self, *args, **kwargs):
+        super(CustomUserCreationForm, self).__init__(*args, **kwargs)
+
+        # Añade la clase 'form-control' de Bootstrap a todos los campos
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
 
 class CustomAuthenticationForm(forms.Form):
     username = forms.CharField(label='Usuario', max_length=150)
