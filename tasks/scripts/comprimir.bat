@@ -4,4 +4,4 @@ echo ---------------------------
 echo La fecha y hora actuales son:
 echo %date% %time%
 echo ---------------------------
-pause
+exit /b

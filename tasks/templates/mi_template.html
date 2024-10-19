@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Salida del Script</h1>
+
+    <form method="POST" class="text-center mb-4">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Ejecutar Script</button>
+    </form>
+
+    <hr>
+
+    <h3>Salida:</h3>
+    <pre class="bg-light border p-3">{{ output }}</pre>
+
+    {% if error %}
+    <h3 class="text-danger">Errores:</h3>
+    <pre class="bg-light border p-3">{{ error }}</pre>
+    {% endif %}
+</div>
+{% endblock %}
