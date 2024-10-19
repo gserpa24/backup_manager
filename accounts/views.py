@@ -6,25 +6,6 @@ from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
 
 
-@login_required
-def register_view(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')  # Redirigir al login después de registrarse
-    else:
-        form = CustomUserCreationForm()
-
-    return render(request, 'register.html', {'form': form})
-
-
-def logout_view(request):
-    logout(request)
-    messages.success(request, 'Has cerrado sesión correctamente.')
-    return redirect('login')  # Cambia 'login' por la vista a la que deseas redirigir después de cerrar sesión
-
-
 def login_view(request):
     if request.method == 'POST':
         form = CustomAuthenticationForm(data=request.POST)
@@ -47,3 +28,9 @@ def login_view(request):
         messages.info(request, 'Por favor, inicia sesión para continuar.')
 
     return render(request, 'login.html', {'form': form})
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'Has cerrado sesión correctamente.')
+    return redirect('login')  # Cambia 'login' por la vista a la que deseas redirigir después de cerrar sesión
+
