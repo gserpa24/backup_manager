@@ -2,11 +2,18 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="text-center">Salida del Script</h1>
+    <h1 class="text-center">Ejecutar Scripts</h1>
 
+    <!-- Formulario para ejecutar scripts -->
     <form method="POST" class="text-center mb-4">
         {% csrf_token %}
-        <button type="submit" class="btn btn-primary">Ejecutar Script</button>
+
+        <!-- Crear un botón para cada script -->
+        {% for script_name in scripts.keys %}
+            <button type="submit" name="script_name" value="{{ script_name }}" class="btn btn-primary mx-2">
+                Ejecutar {{ script_name|title }}
+            </button>
+        {% endfor %}
     </form>
 
     <hr>
