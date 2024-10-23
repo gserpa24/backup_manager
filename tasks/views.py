@@ -5,9 +5,9 @@ import os
 from django.conf import settings
 # Tareas disponibles
 TASKS = {
-    'exportar_vm': 'vm_Exporter.sh',
+    'exportar_vm': 'vm_export.sh',
     'verificar_mf': 'verificar.sh',
-    'comprimir_vm': 'comprimir.bat',
+    'comprimir_vm': 'comprimir.sh',
     'enviar_nas': 'scp_nas.sh'
 }
 
@@ -23,7 +23,7 @@ def script_view(request):
 
     # Diccionario para mapear nombres de scripts a sus rutas
     scripts = {
-        'script1': os.path.join('tasks', 'scripts', 'comprimir.bat'),
+        'script1': os.path.join('tasks', 'scripts', 'comprimir.sh'),
         'script2': os.path.join('tasks', 'scripts', 'script2.bat'),
         'script3': os.path.join('tasks', 'scripts', 'script3.bat'),
     }
@@ -35,16 +35,16 @@ def script_view(request):
         if script_path:
             try:
                 # Ejecutar el script y capturar la salida
-                result = subprocess.run(['cmd', '/c', script_path],
-                                        stdout=subprocess.PIPE,
-                                        stderr=subprocess.PIPE,
-                                        text=True,
-                                        shell=True,
-                                        check=True)
+                result = subprocess.run(['python3', script_path],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True,
+                        check=True)
+                
                 output = result.stdout
                 error = result.stderr
             except subprocess.CalledProcessError as e:
                 output = e.stdout
                 error = e.stderr
 
-    return render(request, 'mi_template.html', {'output': output, 'error': error, 'scripts': scripts})
+    return render(request, 'tasks.html', {'output': output, 'error': error, 'scripts': scripts})
