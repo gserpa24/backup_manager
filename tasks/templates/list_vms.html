@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Maquinas virutales Disponibles</h1>
+
+    {% if error %}
+    <div class="alert alert-danger">
+        <strong>Error:</strong> {{ error }}
+    </div>
+    {% endif %}
+
+    {% if vms %}
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Nombre VM</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for vm in vms %}
+            <tr>
+                <td>{{ vm }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-center">No se encontraron maquinas virutales</p>
+    {% endif %}
+</div>
+{% endblock %}

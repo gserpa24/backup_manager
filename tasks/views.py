@@ -35,7 +35,7 @@ def script_view(request):
         if script_path:
             try:
                 # Ejecutar el script y capturar la salida
-                result = subprocess.run(['python3', script_path],
+                result = subprocess.run(['bash', script_path],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
                         text=True,
@@ -48,3 +48,26 @@ def script_view(request):
                 error = e.stderr
 
     return render(request, 'tasks.html', {'output': output, 'error': error, 'scripts': scripts})
+
+def list_vms_view(request):
+    output = ''
+    error = ''
+
+    try:
+        # Ejecutar el comando govc para listar las mquinas virtuales
+        result = subprocess.run(['govc', 'find', '-type', 'm'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                text=True,
+                                check=True)
+        output = result.stdout
+        error = result.stderr
+    
+    except subprocess.CalledProcessError as e:
+        output = e.stdout
+        error = e.stderr
+        
+    #Dividir la saida por lineas para la vista
+    vms = output.splitlines()
+    
+    return render(request, 'list_vms.html', {'vms': vms, 'error': error})
