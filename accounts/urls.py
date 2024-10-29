@@ -5,3 +5,4 @@ urlpatterns = [
     path('', login_view, name='login'),  # Ruta para login
     path('logout/', logout_view, name='logout'),
 ]
+

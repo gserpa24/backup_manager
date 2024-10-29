@@ -1,57 +1,23 @@
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-import subprocess
+import base64
 import os
 from django.conf import settings
-# Tareas disponibles
-TASKS = {
-    'exportar_vm': 'vm_export.sh',
-    'verificar_mf': 'verificar.sh',
-    'comprimir_vm': 'comprimir.sh',
-    'enviar_nas': 'scp_nas.sh'
-}
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.urls import reverse
+import subprocess
+import urllib.parse
 
+# Tareas disponibles
 
 @login_required
 def home(request):
     return render(request, 'home.html')
 
-
-def script_view(request):
-    output = ''
-    error = ''
-
-    # Diccionario para mapear nombres de scripts a sus rutas
-    scripts = {
-        'script1': os.path.join('tasks', 'scripts', 'comprimir.sh'),
-        'script2': os.path.join('tasks', 'scripts', 'script2.bat'),
-        'script3': os.path.join('tasks', 'scripts', 'script3.bat'),
-    }
-
-    if request.method == 'POST':
-        script_name = request.POST.get('script_name')
-        script_path = scripts.get(script_name)
-
-        if script_path:
-            try:
-                # Ejecutar el script y capturar la salida
-                result = subprocess.run(['bash', script_path],
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                        text=True,
-                        check=True)
-                
-                output = result.stdout
-                error = result.stderr
-            except subprocess.CalledProcessError as e:
-                output = e.stdout
-                error = e.stderr
-
-    return render(request, 'tasks.html', {'output': output, 'error': error, 'scripts': scripts})
-
 def list_vms_view(request):
     output = ''
     error = ''
+    vms = []
 
     try:
         # Ejecutar el comando govc para listar las mquinas virtuales
@@ -68,6 +34,86 @@ def list_vms_view(request):
         error = e.stderr
         
     #Dividir la saida por lineas para la vista
-    vms = output.splitlines()
+    lines = output.splitlines()
+
+    #Extrae solo el nombre de las vms
+    vms = [line.split('/')[-1] for line in lines if line] #toma ultimo valor
     
     return render(request, 'list_vms.html', {'vms': vms, 'error': error})
+
+
+def execute_vm_script(request, vm):
+    output = ''
+    error = ''
+
+    vm_name = vm
+
+    # Decodificar la ruta de la VM
+    #vm_name = base64.urlsafe_b64decode(vm.encode()).decode()
+
+    # Configurar variables de entorno para govc
+    os.environ['GOVC_URL'] = settings.GOVC_URL
+    os.environ['GOVC_USERNAME'] = settings.GOVC_USERNAME
+    os.environ['GOVC_PASSWORD'] = settings.GOVC_PASSWORD
+    os.environ['GOVC_INSECURE'] = settings.GOVC_INSECURE
+
+    # Verificar que las variables de entorno estén configuradas (para depuración)
+    print({vm_name: vm})
+
+    try:
+        # Apagar la VM
+        power_off_cmd = ["govc", "vm.power", "-off", "-force", vm_name]
+        result = subprocess.run(power_off_cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(f"Apagar VM: {result.stdout.decode().strip()}") #Mensaje de depuracion
+
+        # Definir rutas y variables para la exportación
+        export_path = f"/tmp/{vm_name}"
+        os.makedirs(export_path, exist_ok=True)
+        #print({export_path})
+
+        # Verificar si el archivo OVF ya existe
+        ovf_file_path = os.path.join(export_path, f"{vm_name}/{vm_name}.ovf")
+        if not os.path.exists(ovf_file_path):
+            export_cmd = ["govc", "export.ovf", "-sha=256", "-vm", vm_name, export_path]
+            result = subprocess.run(export_cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(f"Exportar OVF: {result.stdout.decode().strip()}")  # Mensaje de depuración
+        else:
+            print(f"El archivo OVF ya existe: {ovf_file_path}. Saltando la exportación.")
+
+        # Comprimir la exportación
+        tar_file = f"/tmp/{vm_name}.tar.gz"
+        tar_cmd = ["tar", "-czvf", tar_file, "-C", export_path, "."]
+        result = subprocess.run(tar_cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(f"Comprimir: {result.stdout.decode().strip()}")  # Mensaje de depuración
+
+        print(f"Ruta del archivo tar: {tar_file}")  # Imprimir la ruta del archivo tar
+
+        # Enviar el archivo al NAS
+        nas_path = "//192.168.50.6/Public"  # Reemplaza con la IP y carpeta del NAS
+        #nas_user = "<usuario_nas>"  # Reemplaza con el usuario NAS
+        #nas_pass = "<password_nas>"  # Reemplaza con la contraseña NAS
+
+        # Imprimir la ruta del directorio actual
+        # print("Directorio de trabajo actual:", os.getcwd())
+
+        if not os.path.exists(tar_file):
+            print(f"El archivo {tar_file} no existe.")
+        else:
+            smb_cmd = ["smbclient", nas_path, "-N", f"put {tar_file}"]
+            try:
+                result = subprocess.run(smb_cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                print(f"Enviar al NAS: {result.stdout.decode().strip()}")  # Mensaje de depuración
+            except subprocess.CalledProcessError as e:
+                print(f"Error al enviar al NAS: {e.stderr.decode().strip()}")
+
+        # Limpiar archivos temporales
+        #subprocess.run(["rm", "-rf", export_path], check=True)
+        #subprocess.run(["rm", "-f", tar_file], check=True)
+
+        output = "Proceso completado con éxito."
+
+    except subprocess.CalledProcessError as e:
+        output = "Error en el proceso."
+        error = f"Comando fallido: {e.cmd}. Salida de error: {e.stderr}"
+
+    return render(request, 'execute_vm_script.html', {'output': output, 'error': error})

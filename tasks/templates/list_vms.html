@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="text-center">Maquinas virutales Disponibles</h1>
+    <h1 class="text-center">Maquinas virtuales Disponibles</h1>
 
     {% if error %}
     <div class="alert alert-danger">
@@ -21,7 +21,11 @@
         <tbody>
             {% for vm in vms %}
             <tr>
-                <td>{{ vm }}</td>
+                <td>
+                    {% load base64_filters %}
+
+                    <a href="{% url 'execute_vm_script' vm=vm %}">{{ vm }}</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

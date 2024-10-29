@@ -13,6 +13,20 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
+# Otras configuraciones...
+
+os.environ['GOVC_URL'] = 'https://192.168.50.20/sdk'
+os.environ['GOVC_USERNAME'] = 'root'
+os.environ['GOVC_PASSWORD'] = 'UNSM2022a'
+os.environ['GOVC_INSECURE'] = '1'
+
+# Opcionalmente, puedes asignarlas a variables de configuración de Django
+GOVC_URL = os.environ['GOVC_URL']
+GOVC_USERNAME = os.environ['GOVC_USERNAME']
+GOVC_PASSWORD = os.environ['GOVC_PASSWORD']
+GOVC_INSECURE = os.environ['GOVC_INSECURE']
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -39,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tasks',
+    'tasks.templatetags',
     'accounts',
 ]
 
@@ -126,3 +141,4 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/login/'  # Asegúrate de que esta sea la URL correcta de tu página de login
+

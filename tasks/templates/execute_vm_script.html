@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Resultado del Script</h1>
+
+    {% if error %}
+    <div class="alert alert-danger">
+        <strong>Error:</strong> {{ error }}
+    </div>
+    {% else %}
+    <div class="alert alert-success">
+        <pre>{{ output }}</pre>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'list_vms' %}" class="btn btn-primary mt-3">Volver a la Lista de VMs</a>
+</div>
+{% endblock %}
