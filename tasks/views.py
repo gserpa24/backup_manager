@@ -1,12 +1,9 @@
-import base64
 import os
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.shortcuts import render
 import subprocess
-import urllib.parse
+
 
 # Tareas disponibles
 
@@ -88,18 +85,19 @@ def execute_vm_script(request, vm):
 
         print(f"Ruta del archivo tar: {tar_file}")  # Imprimir la ruta del archivo tar
 
+        os.chdir("/tmp")
         # Enviar el archivo al NAS
         nas_path = "//192.168.50.6/Public"  # Reemplaza con la IP y carpeta del NAS
+        tar = f"/tmp/{vm_name}.tar.gz"
         #nas_user = "<usuario_nas>"  # Reemplaza con el usuario NAS
         #nas_pass = "<password_nas>"  # Reemplaza con la contraseña NAS
 
-        # Imprimir la ruta del directorio actual
         # print("Directorio de trabajo actual:", os.getcwd())
 
-        if not os.path.exists(tar_file):
-            print(f"El archivo {tar_file} no existe.")
+        if not os.path.exists(tar):
+            print(f"El archivo {tar} no existe.")
         else:
-            smb_cmd = ["smbclient", nas_path, "-N", f"put {tar_file}"]
+            smb_cmd = ["smbclient", nas_path, "-N", "-c", f"put {vm_name}.tar.gz"]
             try:
                 result = subprocess.run(smb_cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 print(f"Enviar al NAS: {result.stdout.decode().strip()}")  # Mensaje de depuración
@@ -107,8 +105,8 @@ def execute_vm_script(request, vm):
                 print(f"Error al enviar al NAS: {e.stderr.decode().strip()}")
 
         # Limpiar archivos temporales
-        #subprocess.run(["rm", "-rf", export_path], check=True)
-        #subprocess.run(["rm", "-f", tar_file], check=True)
+        subprocess.run(["rm", "-rf", export_path], check=True)
+        subprocess.run(["rm", "-f", tar_file], check=True)
 
         output = "Proceso completado con éxito."
 
