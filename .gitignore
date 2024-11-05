@@ -1,5 +1,6 @@
 ### IntelliJ IDEA User-specific stuff ###
 ../.idea/
+.idea/
 **/migrations/*
 
 # Created by https://www.toptal.com/developers/gitignore/api/django
