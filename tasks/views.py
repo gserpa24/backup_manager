@@ -36,7 +36,7 @@ def list_vms_view(request):
         error = f"Ocurrió un error al ejecutar el comando govc: {e.stderr}"
 
     except FileNotFoundError:
-        error = "La herramienta govc no está instalada o no es accesible desde este servidor."
+        error = "La herramienta no está instalada o no es accesible desde este servidor."
 
     # Procesar la salida si no hay errores
     if not error:
