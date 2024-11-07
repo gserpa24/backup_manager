@@ -11,31 +11,36 @@ import subprocess
 def home(request):
     return render(request, 'home.html')
 
+
 def list_vms_view(request):
     output = ''
     error = ''
     vms = []
 
     try:
-        # Ejecutar el comando govc para listar las mquinas virtuales
-        result = subprocess.run(['govc', 'find', '-type', 'm'],
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
-                                text=True,
-                                check=True)
+        # Ejecutar el comando govc para listar las máquinas virtuales
+        result = subprocess.run(
+            ['govc', 'find', '-type', 'm'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=True
+        )
         output = result.stdout
         error = result.stderr
-    
-    except subprocess.CalledProcessError as e:
-        output = e.stdout
-        error = e.stderr
-        
-    #Dividir la saida por lineas para la vista
-    lines = output.splitlines()
 
-    #Extrae solo el nombre de las vms
-    vms = [line.split('/')[-1] for line in lines if line] #toma ultimo valor
-    
+    except subprocess.CalledProcessError as e:
+        error = f"Ocurrió un error al ejecutar el comando govc: {e.stderr}"
+
+    except FileNotFoundError:
+        error = "La herramienta govc no está instalada o no es accesible desde este servidor."
+
+    # Procesar la salida si no hay errores
+    if not error:
+        # Dividir la salida por líneas y extraer nombres de VM
+        lines = output.splitlines()
+        vms = [line.split('/')[-1] for line in lines if line]
+
     return render(request, 'list_vms.html', {'vms': vms, 'error': error})
 
 
