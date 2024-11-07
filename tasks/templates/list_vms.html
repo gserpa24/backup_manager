@@ -29,7 +29,7 @@
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex space-x-2">
                 <!-- Formulario para ejecutar la vista execute_vm_script -->
-                <form action="{% url 'execute_vm_script' vm_name=vm %}" method="post">
+                <form action="{% url 'execute_vm_script' vm %}" method="post">
                   {% csrf_token %}
                   <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
                     Backup
