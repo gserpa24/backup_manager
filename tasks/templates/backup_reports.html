@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Reportes{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+        <h1>Reportes de Respaldos</h1>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Máquina Virtual</th>
+                    <th>Fecha de Respaldo</th>
+                    <th>Duración</th>
+                    <th>Tamaño (Bytes)</th>
+                    <th>Usuario</th>
+                    <th>Éxito</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for backup in backups %}
+                <tr>
+                    <td>{{ backup.vm_name }}</td>
+                    <td>{{ backup.backup_date }}</td>
+                    <td>{{ backup.execution_time }}</td>
+                    <td>{{ backup.vm_size }}</td>
+                    <td>{{ backup.user.username }}</td>
+                    <td>
+                      {% if backup.success %}
+                        Sí
+                      {% else %}
+                        No
+                      {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No se encontraron respaldos.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+{% endblock %}

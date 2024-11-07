@@ -150,3 +150,8 @@ def execute_vm_script(request, vm):
         )
 
     return render(request, 'execute_vm_script.html', {'output': output, 'error': error})
+
+def backup_reports(request):
+    backups = Backup.objects.all().order_by('-backup_date')
+
+    return render(request, 'backup_reports.html', {'backups': backups})
