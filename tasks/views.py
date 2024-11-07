@@ -2,6 +2,9 @@ import os
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from datetime import timedelta
+from django.utils.timezone import now
+from tasks.models import Backup
 import subprocess
 
 
@@ -47,8 +50,8 @@ def list_vms_view(request):
 def execute_vm_script(request, vm):
     output = ''
     error = ''
-
     vm_name = vm
+    start_time = now()
 
     # Decodificar la ruta de la VM
     #vm_name = base64.urlsafe_b64decode(vm.encode()).decode()
@@ -71,7 +74,7 @@ def execute_vm_script(request, vm):
         # Definir rutas y variables para la exportación
         export_path = f"/tmp/{vm_name}"
         os.makedirs(export_path, exist_ok=True)
-        #print({export_path})
+        print(f"Directorio de exportacion creado: {export_path}")
 
         # Verificar si el archivo OVF ya existe
         ovf_file_path = os.path.join(export_path, f"{vm_name}/{vm_name}.ovf")
@@ -89,6 +92,23 @@ def execute_vm_script(request, vm):
         print(f"Comprimir: {result.stdout.decode().strip()}")  # Mensaje de depuración
 
         print(f"Ruta del archivo tar: {tar_file}")  # Imprimir la ruta del archivo tar
+
+        #Tamaño de archivo exportado
+        vm_size = os.stat(tar_file).st_size
+
+        #Tiempo de ejecucion
+        execution_time = now() - start_time
+
+        #Registrar respaldo en bd
+        backup = Backup.objects.create(
+            vm_name=vm_name,
+            user=request.user,
+            execution_time=execution_time,
+            vm_size=vm_size,
+            backup_file_path=tar_file,
+            success=True,
+        )
+        print(f"Respaldo registardo: {backup}")
 
         os.chdir("/tmp")
         # Enviar el archivo al NAS
@@ -118,5 +138,15 @@ def execute_vm_script(request, vm):
     except subprocess.CalledProcessError as e:
         output = "Error en el proceso."
         error = f"Comando fallido: {e.cmd}. Salida de error: {e.stderr}"
+
+        backup = Backup.objects.create(
+            vm_name=vm_name,
+            user=request.user,
+            execution_time=now() - start_time,
+            vm_size=0,
+            backup_file_path=tar_file,
+            success=False,
+            error_message=error,
+        )
 
     return render(request, 'execute_vm_script.html', {'output': output, 'error': error})
