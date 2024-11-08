@@ -96,6 +96,7 @@ def execute_vm_script(request, vm):
         #Tamaño de archivo exportado
         vm_size = os.stat(tar_file).st_size
 
+
         #Tiempo de ejecucion
         execution_time = now() - start_time
 
