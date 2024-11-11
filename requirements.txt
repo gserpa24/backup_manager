@@ -1,4 +1,4 @@
-gitapturl==0.5.2
+apturl==0.5.2
 asgiref==3.8.1
 attrs==21.2.0
 Automat==20.2.0
@@ -55,6 +55,7 @@ paramiko==2.9.3
 pexpect==4.8.0
 Pillow==9.0.1
 protobuf==3.12.4
+psutil==6.1.0
 ptyprocess==0.7.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.1
