@@ -2,7 +2,37 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h1 class="display-4 font-weight-bold">Bienvenido a la Página de Inicio</h1>
-<p>¡Has iniciado sesión con éxito!</p>
+<div class="max-w-4xl mx-auto py-8">
+    <h1 class="text-2xl font-bold text-center mb-6">Estadísticas del Sistema</h1>
+    
+    <!-- Uso de Disco -->
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold">Disco</h2>
+        <p>Total: {{ disk.total }} GB</p>
+        <p>Usado: {{ disk.used }} GB ({{ disk.percent }}%)</p>
+        <p>Libre: {{ disk.free }} GB</p>
+        <div class="w-full bg-gray-200 rounded-full h-4 mt-2">
+            <div class="bg-blue-600 h-4 rounded-full" style="width: {{ disk.percent }}%"></div>
+        </div>
+    </div>
+
+    <!-- Uso de RAM -->
+    <div class="mb-8">
+        <h2 class="text-xl font-semibold">RAM</h2>
+        <p>Total: {{ ram.total }} MB</p>
+        <p>Usado: {{ ram.used }} MB ({{ ram.percent }}%)</p>
+        <p>Libre: {{ ram.free }} MB</p>
+        <div class="w-full bg-gray-200 rounded-full h-4 mt-2">
+            <div class="bg-green-600 h-4 rounded-full" style="width: {{ ram.percent }}%"></div>
+        </div>
+    </div>
+
+    <!-- Uso de Red -->
+    <div>
+        <h2 class="text-xl font-semibold">Red</h2>
+        <p>Enviado: {{ network.sent }} MB</p>
+        <p>Recibido: {{ network.received }} MB</p>
+    </div>
+</div>
 {% endblock %}
 

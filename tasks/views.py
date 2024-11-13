@@ -1,4 +1,5 @@
 import os
+import psutil
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -12,7 +13,44 @@ import subprocess
 
 @login_required
 def home(request):
-    return render(request, 'home.html')
+    # Estadísticas de disco
+    disk_usage = psutil.disk_usage('/')
+    total_disk = disk_usage.total // (1024 ** 3)  # en GB
+    used_disk = disk_usage.used // (1024 ** 3)  # en GB
+    free_disk = disk_usage.free // (1024 ** 3)  # en GB
+    disk_percent = disk_usage.percent
+
+    # Estadísticas de RAM
+    memory = psutil.virtual_memory()
+    total_ram = memory.total // (1024 ** 2)  # en MB
+    used_ram = memory.used // (1024 ** 2)  # en MB
+    free_ram = memory.available // (1024 ** 2)  # en MB
+    ram_percent = memory.percent
+
+    # Estadísticas de red
+    net_io = psutil.net_io_counters()
+    sent_data = net_io.bytes_sent // (1024 ** 2)  # en MB
+    received_data = net_io.bytes_recv // (1024 ** 2)  # en MB
+
+    context = {
+        'disk': {
+            'total': total_disk,
+            'used': used_disk,
+            'free': free_disk,
+            'percent': disk_percent,
+        },
+        'ram': {
+            'total': total_ram,
+            'used': used_ram,
+            'free': free_ram,
+            'percent': ram_percent,
+        },
+        'network': {
+            'sent': sent_data,
+            'received': received_data,
+        }
+    }
+    return render(request, 'home.html', context)
 
 
 def list_vms_view(request):
