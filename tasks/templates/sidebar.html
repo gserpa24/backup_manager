@@ -30,17 +30,17 @@
             <div class="flex justify-between items-center h-full">
                 <div class="flex items-center">
                     <!-- Logo -->
-                    <svg class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span class="ml-2 text-xl font-bold text-gray-800">Logo</span>
+                    <img src="{% static 'images/escudo.png' %}" alt="UNSM" class="h-10 w-10 rounded-full">
+                    <span class="ml-3 text-xl font-semibold text-green-600">BackUp</span>
                 </div>
+                
+                {% if user.is_authenticated %}
                 <div class="flex items-center">
                     <div x-data="{ open: false }" class="ml-3 relative">
                         <div>
                             <button @click="open = !open" class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" id="user-menu" aria-haspopup="true" aria-expanded="false">
                                 <span class="sr-only">Abrir menú de usuario</span>
-                                <span>John Doe</span>
+                                <span>{{ request.user.username }}</span>
                                 <svg class="ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
@@ -49,41 +49,70 @@
                         <div x-show="open" @click.away="open = false" class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5" role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
                             <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Tu Perfil</a>
                             <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Configuración</a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Cerrar sesión</a>
+                            <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Cerrar sesión</a>
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </header>
 
     <div class="flex flex-1 overflow-hidden">
         <!-- Sidebar -->
-        <aside class="w-64 bg-gray-800 text-white">
+        <aside class="w-64 bg-black text-white">
             <nav class="mt-5 px-2">
-                <a href="#" class="group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition ease-in-out duration-150">
-                    <svg class="mr-4 h-6 w-6 text-gray-300 group-hover:text-gray-300 group-focus:text-gray-300 transition ease-in-out duration-150" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    Inicio
-                </a>
-                <a href="#" class="mt-1 group flex items-center px-2 py-2 text-base leading-6 font-medium rounded-md text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700 transition ease-in-out duration-150">
-                    <svg class="mr-4 h-6 w-6 text-gray-300 group-hover:text-gray-300 group-focus:text-gray-300 transition ease-in-out duration-150" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    Configuración
-                </a>
+                <a href="/home" class="flex items-center p-2 text-base font-normal text-gray-300 rounded-lg hover:bg-gray-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 32 32"><path fill="currentColor" d="M28 16v6H4V6h7V4H4a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h8v4H8v2h16v-2h-4v-4h8a2 2 0 0 0 2-2v-6ZM18 28h-4v-4h4Z"/><path fill="currentColor" d="M18 18h-.01a1 1 0 0 1-.951-.725L15.246 11H11V9h5a1 1 0 0 1 .962.725l1.074 3.76l3.009-9.78A1.01 1.01 0 0 1 22 3a.98.98 0 0 1 .949.684L24.72 9H30v2h-6a1 1 0 0 1-.949-.684l-1.013-3.04l-3.082 10.018A1 1 0 0 1 18 18"/></svg>
+                        <span class="ml-3">Inicio</span>
+                    </a>
+                <a href="/vms" class="flex items-center p-2 text-sm font-normal text-gray-300 rounded-lg hover:bg-gray-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1.2rem" height="1.2rem" viewBox="0 0 32 32"><circle cx="9" cy="26" r="1" fill="currentColor"/><path fill="currentColor" d="M26 30H6a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2M6 24v4h20v-4z"/><circle cx="9" cy="16" r="1" fill="currentColor"/><path fill="currentColor" d="M26 20H6a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2M6 14v4h20v-4z"/><circle cx="9" cy="6" r="1" fill="currentColor"/><path fill="currentColor" d="M26 10H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h20a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2M6 4v4h20V4z"/></svg>
+                        <span class="ml-3">Maquinas</span>
+                    </a>
+                <a href="/reportes" class="flex items-center p-2 text-sm font-normal text-gray-300 rounded-lg hover:bg-gray-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span class="ml-3">Reportes</span>
+                    </a>
+                <li>
+                    <details class="group">
+                        <summary class="flex items-center p-2 text-base font-normal text-gray-300 rounded-lg hover:bg-gray-800 cursor-pointer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                            </svg>
+                            <span class="ml-3 flex-1">Herramientas</span>
+                            <svg class="w-6 h-6 transform transition-transform duration-200 group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </summary>
+                        <ul class="pl-4 mt-2 space-y-1">
+                            <li>
+                                <a href="#" class="flex items-center p-2 text-sm font-normal text-gray-300 rounded-lg hover:bg-gray-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    <span class="ml-3">Configuración</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </details>
+                </li>
             </nav>
         </aside>
 
         <!-- Área de contenido principal -->
         <main class="flex-1 overflow-auto bg-gray-100 custom-scrollbar">
             <div class="container mx-auto px-6 py-8">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa debitis dolores eveniet ipsa molestiae nihil sunt vero! Ad alias aspernatur assumenda corporis deleniti doloribus eius est expedita, fuga harum impedit ipsam ipsum magni maiores natus provident qui quo repellendus! Accusantium ad amet animi at eius ex facere facilis ipsam magnam magni, perspiciatis quidem quisquam sed tempore unde veritatis voluptate? Ab alias amet commodi consectetur debitis deserunt earum eveniet facilis ipsam iste laudantium modi nemo pariatur porro praesentium quibusdam quo ratione rem, veritatis voluptas? Adipisci aliquid aspernatur fugit libero necessitatibus quibusdam ratione? Alias atque aut, doloremque ea eaque et eveniet fugit hic illo inventore libero magnam, magni natus nesciunt nisi non nulla, optio quaerat quis quo reprehenderit sed veritatis. Ab alias asperiores blanditiis consequuntur corporis, dolor doloribus eius esse et incidunt inventore iusto minus, molestias omnis quia recusandae repudiandae sed voluptate. Beatae deleniti eligendi enim ex facere fugit, impedit ipsam, labore modi necessitatibus nesciunt nihil non numquam omnis quaerat quia recusandae reiciendis repudiandae sit sunt. Accusantium ad aperiam aspernatur commodi consequatur culpa cum dicta dolorum et explicabo, facere fugit id impedit, magni minima nam nemo nesciunt omnis provident qui quo ratione repellendus reprehenderit vel, voluptate. A accusamus ad animi aspernatur cumque, cupiditate, deserunt dignissimos distinctio doloribus et facilis ipsum nesciunt nihil omnis perferendis porro possimus quidem repellat saepe sed ullam, unde voluptates. A ab accusamus architecto at autem commodi doloribus dolorum, enim eveniet facere facilis fugiat fugit inventore itaque iusto laboriosam laudantium nobis non officiis omnis pariatur quam qui quia quis quisquam quo quos recusandae repellat sapiente soluta suscipit voluptas voluptate voluptates. Beatae blanditiis cumque ea exercitationem harum hic ipsum labore praesentium quidem sit. Amet consectetur fugit harum odit pariatur quia repellendus saepe suscipit! Accusantium corporis fuga hic minima molestias neque tempora! Assumenda consequuntur eaque enim, nesciunt nobis quae quia reiciendis saepe. Atque autem beatae blanditiis consectetur eaque esse exercitationem expedita hic ipsa ipsum iure laboriosam laborum laudantium nesciunt non officia, perferendis reiciendis reprehenderit similique ullam! Adipisci aspernatur dignissimos dolore enim excepturi harum illo, in laudantium modi nisi non placeat quis totam? A ad animi asperiores aspernatur consequuntur cum delectus deleniti dicta dolorem doloremque ea eligendi et ex expedita facere hic illo impedit inventore ipsa iure labore libero minima minus nihil nobis non obcaecati officiis perferendis quaerat repellendus repudiandae, sed tenetur ut velit voluptates voluptatibus voluptatum. Beatae consequatur cupiditate eius eum ex harum incidunt nemo odit officiis perspiciatis, quasi, repellendus totam, vitae! Aliquid ex explicabo illum impedit incidunt ipsam iusto nemo neque, non praesentium quas quibusdam quod rerum suscipit ut. Architecto, aut cupiditate enim illum, in nihil nisi nobis odit officiis omnis quibusdam sed tempora temporibus ullam velit veritatis voluptatem. Accusantium at consequuntur explicabo, nihil quod sit soluta voluptatibus. Doloribus praesentium quo quos sunt tenetur. Ab aliquid amet architecto distinctio et eum iure libero nobis, optio, recusandae totam vel. Aperiam cupiditate deserunt doloremque, ipsam minima porro quod sapiente velit voluptate. Accusamus eveniet itaque non sint tempore? Autem beatae consequatur delectus dolor, doloribus error ex, fugit ipsam mollitia necessitatibus perferendis praesentium provident saepe sint unde. Architecto aspernatur at ex excepturi hic illo molestias numquam sed vitae. Assumenda consectetur consequatur fugiat nobis possimus quam ut. Accusantium culpa dicta expedita id incidunt iure nostrum nulla qui recusandae tempora! Accusamus ad assumenda aut autem consequuntur cumque cupiditate delectus dignissimos dolor, doloremque eos est et expedita fugiat id iusto labore maxime minima molestiae nihil nobis omnis optio perferendis placeat porro quae quaerat quasi quod recusandae rerum similique sint soluta tempore totam veniam vitae voluptate? Asperiores at, commodi consectetur doloribus ducimus eveniet illum impedit inventore iusto laborum, laudantium maiores minus modi mollitia necessitatibus nisi porro repellat, repudiandae rerum saepe sapiente similique ut velit voluptas voluptates. Distinctio eligendi magni maxime nostrum omnis possimus! Cupiditate facere id in itaque labore mollitia repellat! Aliquam animi assumenda consequuntur, cum dolor doloribus eius est ex, excepturi expedita id in ipsam minima molestias neque nobis non quas, quis quo quos rem saepe voluptates! Amet at culpa dicta doloribus eius eligendi, eos, esse exercitationem facere facilis harum id laudantium, magnam minus necessitatibus nesciunt nobis pariatur praesentium provident ratione recusandae reiciendis repudiandae sed suscipit temporibus voluptas voluptates. Atque debitis inventore placeat quibusdam recusandae. Ad amet, aperiam consequuntur cumque cupiditate doloremque doloribus earum et eveniet id illo illum iusto maiores minima molestias mollitia, natus nesciunt numquam omnis pariatur perferendis provident sed tempore. Ab adipisci aspernatur assumenda beatae, consectetur consequatur consequuntur, doloremque dolorum enim esse fugit ipsum molestiae odit officia officiis provident quas quasi quia quisquam ratione rem reprehenderit suscipit temporibus velit voluptatem. Commodi facilis nam sequi! Aperiam, architecto asperiores assumenda beatae, commodi corporis distinctio dolore dolorum eius error est eveniet excepturi impedit ipsum laborum maiores molestiae nam nostrum officiis optio placeat porro possimus quas qui quia quisquam reiciendis rem tempora tempore voluptas. Deserunt doloremque ducimus eaque eum fugiat in itaque necessitatibus, omnis reiciendis reprehenderit sapiente velit voluptas? Amet animi eaque est excepturi exercitationem, magnam officia optio possimus sequi ullam. A debitis ex, facilis ipsa neque officiis rem, repellat sapiente sint tempore temporibus velit veniam. Animi asperiores, aut beatae cum delectus deleniti dolorum earum eius eligendi et excepturi expedita facilis id incidunt ipsam itaque maiores modi nam nesciunt odio omnis quas rem rerum saepe sequi similique temporibus velit veritatis voluptate voluptatem. Alias corporis debitis deserunt dignissimos distinctio ducimus eos et facere magnam molestias nulla, praesentium quae quo rerum saepe suscipit velit veniam voluptate? Ad amet delectus dignissimos doloremque doloribus enim incidunt ipsam ipsum maxime, molestias nisi nulla numquam optio quia repellat similique sint, tenetur ullam veritatis voluptates. Asperiores excepturi nesciunt nisi nostrum praesentium, ratione. Ab ad architecto beatae cumque earum eligendi eveniet fugiat in inventore ipsa ipsam maiores modi, nam nulla obcaecati, officia placeat porro possimus temporibus voluptatibus! A beatae blanditiis cum cumque deserunt dolore dolores dolorum error esse exercitationem expedita impedit ipsum maiores molestiae natus nemo nesciunt officia omnis, possimus quia quibusdam quis quod ratione rem repudiandae sapiente soluta voluptatum. Aliquam beatae consequatur consequuntur dolorem eum expedita impedit in, inventore ipsam, ipsum, molestiae molestias natus nemo nihil officiis quo recusandae reprehenderit repudiandae totam voluptates? Cumque, magni.
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusamus, assumenda autem dicta dignissimos dolorum eius eligendi eveniet ex explicabo hic iusto laudantium modi molestiae nam natus nemo nisi officiis perferendis, placeat provident saepe sit sunt ullam voluptatum? Exercitationem facere facilis illum nesciunt? Aut distinctio ea laudantium quibusdam reiciendis repellat vel voluptas. Asperiores deserunt nemo nulla? Aperiam dolorem ipsam iusto magni minus officiis optio! Ab atque ex impedit iusto magnam, minima nam non porro provident quam ratione repellendus reprehenderit temporibus vel voluptatibus. Alias, consequuntur culpa deleniti dolore earum esse est expedita iusto labore laboriosam laudantium minus nobis quam quas quis quod, quos repudiandae similique totam veritatis vero vitae voluptas voluptatum. Aliquid architecto aut consequatur culpa doloremque eum magnam molestiae nulla, provident unde! Ad adipisci cupiditate earum illo magni nesciunt nisi rerum sapiente totam velit. Accusamus aliquid aperiam atque autem consequuntur deserunt dolores eaque error est eum eveniet ex expedita harum, impedit in labore laborum nam necessitatibus possimus quia quidem quo quod reprehenderit saepe soluta suscipit unde voluptas! Deserunt itaque molestias mollitia nisi nobis officiis repudiandae tempora, voluptates! Amet at consequuntur ex, fugit illum iste, labore maxime porro quo, soluta unde voluptas. Amet cum est inventore ipsum iure maxime nihil quisquam.
+                {% block content %}{% endblock %}
             </div>
         </main>
+    
+        {% block extra_scripts %}{% endblock %}
+        <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </div>
 </body>
 </html>
