@@ -11,9 +11,9 @@
                     <th>Máquina Virtual</th>
                     <th>Fecha de Respaldo</th>
                     <th>Duración</th>
-                    <th>Tamaño (Bytes)</th>
+                    <th>Tamaño</th>
                     <th>Usuario</th>
-                    <th>Éxito</th>
+                    <th>Estado</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,13 +22,14 @@
                     <td>{{ backup.vm_name }}</td>
                     <td>{{ backup.backup_date }}</td>
                     <td>{{ backup.execution_time }}</td>
-                    <td>{{ backup.vm_size }}</td>
+                    {% load custom_filters %}
+                    <td>{{ backup.vm_size|filesize }}</td>
                     <td>{{ backup.user.username }}</td>
                     <td>
                       {% if backup.success %}
-                        Sí
+                        Completado
                       {% else %}
-                        No
+                        Fallido
                       {% endif %}
                     </td>
                 </tr>

@@ -1,0 +1,10 @@
+site_name: Sistema de Backup - UNSM
+theme:
+  name: readthedocs
+  locale: es
+nav:
+  - Home: index.md
+  - Introducción: intro.md
+  - Guía:
+      - Instalación: guide/installation.md
+      - Uso: guide/usage.md
