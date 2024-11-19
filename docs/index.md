@@ -1,17 +1,20 @@
-# Welcome to MkDocs
+# Backup Manager
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+**Backup Manager** es una solución automatizada para la gestión de respaldos de máquinas virtuales utilizando `govc`. Ofrece una forma eficiente de proteger datos críticos mediante funcionalidades de programación, restauración y monitoreo.
 
-## Commands
+## Características principales
+- Respaldo automatizado y configurable.
+- Restauración de máquinas virtuales desde puntos de respaldo.
+- Programación de tareas personalizadas.
+- Reportes detallados sobre el estado de los backups.
+- Interfaz amigable y accesible desde cualquier navegador.
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+## Tabla de contenido
+1. [Introducción](intro.md)
+2. [Instalación](installation.md)
+3. [Gestión de Backups](usage/managing_backups.md)
+4. [Restauración de Backups](usage/restoring_backups.md)
+5. [Configuración avanzada](advanced/configuration.md)
+6. [Preguntas Frecuentes](faq.md)
 
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+> **Nota:** Este proyecto no utiliza APIs, sino la herramienta `govc` para realizar todas las operaciones de backup.
