@@ -1,5 +1,9 @@
 site_name: Backup Manager
+repo_url: https://github.com/gserpa24/backup_manager
+repo_name: gserpa24/backup_manager
 theme:
+  icon:
+    repo: fontawesome/brands/git-alt
   name: material
   palette:
     scheme: slate
