@@ -1,4 +1,5 @@
 site_name: Backup Manager
+use_directory_urls: false
 repo_url: https://github.com/gserpa24/backup_manager
 repo_name: gserpa24/backup_manager
 theme:
