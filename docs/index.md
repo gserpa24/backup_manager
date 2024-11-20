@@ -11,7 +11,7 @@
 
 ## Tabla de contenido
 1. [Introducción](intro.md)
-2. [Instalación](installation.md)
+2. [Instalación](guide/installation.md)
 3. [Gestión de Backups](usage/managing_backups.md)
 4. [Restauración de Backups](usage/restoring_backups.md)
 5. [Configuración avanzada](advanced/configuration.md)

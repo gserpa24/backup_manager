@@ -1,10 +1,43 @@
-site_name: Sistema de Backup - UNSM
+site_name: Backup Manager
 theme:
-  name: readthedocs
-  locale: es
+  name: material
+  palette:
+    scheme: slate
+    primary: black
+    accent: green
+  language: es
+  logo: assets/logo.png
+  favicon: assets/favicon.ico
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.instant.preview
+    - navigation.expand
+    - navigation.footer
+    - content.tabs.link
+    - content.code.copy
+    - content.code.select
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/gserpa24
+    - icon: fontawesome/brands/linkedin
+      link: https://github.com/gserpa24
+  generator: false
+copyright: Copyright &copy; 2024 Gustavo Serpa
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
 nav:
-  - Home: index.md
+  - Inicio: index.md
   - Introducción: intro.md
   - Guía:
       - Instalación: guide/installation.md
       - Uso: guide/usage.md
+  - FAQ: faq.md
