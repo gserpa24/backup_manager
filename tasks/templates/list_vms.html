@@ -2,7 +2,7 @@
 {% block title %}Vms{% endblock %}
 
 {% block content %}
-<div class="container mx-auto p-4">
+<div class="container mx-auto p-4" x-data="{ openModal: false, vmData: {} }">
   <h1 class="text-2xl font-bold mb-4">Lista de Máquinas Virtuales</h1>
 
   {% if error %}
@@ -36,7 +36,8 @@
                     Backup
                   </button>
                 </form>
-                <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+                <button @click="openModal = true; loadVMData('{{ vm }}')" 
+                        class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
                   Verificar Estado
                 </button>
               </div>
@@ -46,5 +47,46 @@
       </tbody>
     </table>
   {% endif %}
+  <div x-show="openModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded shadow-lg w-1/3">
+      <h2 class="text-xl font-bold mb-4">Detalles de la Máquina Virtual</h2>
+      <div>
+        <p><strong>Nombre:</strong> <span x-text="vmData.name"></span></p>
+        <p><strong>ID:</strong> <span x-text="vmData.id"></span></p>
+        <p><strong>Tamaño:</strong> <span x-text="vmData.size"></span> GB</p>
+        <p><strong>Sistema Operativo:</strong> <span x-text="vmData.os"></span></p>
+        <p><strong>CPU:</strong> <span x-text="vmData.cpu"></span></p>
+        <p><strong>Memoria:</strong> <span x-text="vmData.memory"></span></p>
+      </div>
+      <div class="mt-4">
+        <button 
+          @click="openModal = false" 
+          class="bg-red-500 text-white px-4 py-2 rounded">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
+    
+<script>
+  function loadVMData(vmId) {
+    fetch(`/get-vm-details/${vmId}/`)
+      .then(response => response.json())
+      .then(data => {
+        document.querySelector('[x-data]').__x.$data.vmData = {
+          name: vmId, // Agrega el nombre (si no está en los datos, lo extraemos del bucle)
+          id: vmId,
+          size: data.size || 'N/A',
+          os: data.os || 'N/A',
+          cpu: data.cpu || 'N/A',
+          memory: data.memory || 'N/A',
+        };
+      })
+      .catch(error => {
+        console.error('Error al obtener los detalles de la VM:', error);
+        alert('Error al obtener los detalles de la VM.');
+      });
+  }
+</script>    
 {% endblock %}

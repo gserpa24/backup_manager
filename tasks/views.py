@@ -6,6 +6,8 @@ from django.shortcuts import render
 from datetime import timedelta
 from django.utils.timezone import now
 from tasks.models import Backup
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 import subprocess
 
 
@@ -83,6 +85,37 @@ def list_vms_view(request):
         vms = [line.split('/')[-1] for line in lines if line]
 
     return render(request, 'list_vms.html', {'vms': vms, 'error': error})
+
+@csrf_exempt
+def get_vm_details(request, vm_id):
+    try:
+        # Comando para obtener los detalles de la VM usando govc
+        command = [
+            "govc",
+            "vm.info",
+            "-json",
+            vm_id  # Reemplazar con el ID de la VM
+        ]
+        result = subprocess.run(command, capture_output=True, text=True, check=True)
+        vm_info = result.stdout
+
+        # Parsear el resultado (ejemplo con JSON, ajusta según el formato de govc)
+        import json
+        vm_data = json.loads(vm_info)
+
+        # Extraer datos relevantes
+        vm_details = {
+            "id": vm_id,
+            "size": vm_data["VirtualMachines"][0]["Storage"]["Uncommitted"] // (1024 ** 3),  # Tamaño en GB
+            "os": vm_data["VirtualMachines"][0]["Guest"]["GuestFullName"],
+            "cpu": f"{vm_data['VirtualMachines'][0]['Config']['Hardware']['NumCPU']} vCPU",
+            "memory": f"{vm_data['VirtualMachines'][0]['Config']['Hardware']['MemoryMB'] // 1024} GB",
+        }
+        return JsonResponse(vm_details)
+    except subprocess.CalledProcessError as e:
+        return JsonResponse({"error": f"Error al ejecutar govc: {e.stderr}"}, status=500)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=500)
 
 
 def execute_vm_script(request, vm):
