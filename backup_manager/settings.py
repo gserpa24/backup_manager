@@ -11,20 +11,18 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
 import os
 
-# Otras configuraciones...
 
-os.environ['GOVC_URL'] = 'https://192.168.50.20/sdk'
-os.environ['GOVC_USERNAME'] = 'root'
-os.environ['GOVC_PASSWORD'] = 'UNSM2022a'
-os.environ['GOVC_INSECURE'] = '1'
+# Ruta absoluta al archivo .env
+dotenv_path = '.env'
+load_dotenv(dotenv_path=dotenv_path)
 
-# Opcionalmente, puedes asignarlas a variables de configuración de Django
-GOVC_URL = os.environ['GOVC_URL']
-GOVC_USERNAME = os.environ['GOVC_USERNAME']
-GOVC_PASSWORD = os.environ['GOVC_PASSWORD']
-GOVC_INSECURE = os.environ['GOVC_INSECURE']
+GOVC_URL = os.getenv('GOVC_URL')
+GOVC_USERNAME = os.getenv('GOVC_USERNAME')
+GOVC_PASSWORD = os.getenv('GOVC_PASSWORD')
+GOVC_INSECURE = os.getenv('GOVC_INSECURE')
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
