@@ -33,7 +33,7 @@
    
 3. **Instalacion de dependencias**:
      ```bash
-     pip install -r requirements.txt
+     pip install -r a.txt
      ```
 
 4. **Configuracion de variables de entorno**:
