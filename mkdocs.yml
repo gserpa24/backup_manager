@@ -41,8 +41,8 @@ markdown_extensions:
 
 nav:
   - Inicio: index.md
-  - Introducción: intro.md
   - Guía:
       - Instalación: guide/installation.md
       - Uso: guide/usage.md
+  - Configuracion Avanzada: advanced/configuration.md
   - FAQ: faq.md
