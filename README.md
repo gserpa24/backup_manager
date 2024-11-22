@@ -19,7 +19,7 @@ El **Sistema de Backup** es una solución automatizada que permite realizar copi
 - **VMware ESXi**: Para la gestión de las máquinas virtuales y exportación de OVF/OVA con `govc`.
 - **smbclient**: Utilizado para la transferencia de archivos a servidores NAS.
 - **Linux (Ubuntu)**: Sistema operativo base para ejecutar los scripts y automatizaciones.
---- 
+
 ## Reglas de Contribución
 
 - Mantén el código claro, legible y bien documentado.
