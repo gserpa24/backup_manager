@@ -1,17 +1,15 @@
 import os
 import psutil
+import json
+import subprocess
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from datetime import timedelta
 from django.utils.timezone import now
 from tasks.models import Backup
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import subprocess
 
-
-# Tareas disponibles
 
 @login_required
 def home(request):
@@ -88,35 +86,47 @@ def list_vms_view(request):
 
 @csrf_exempt
 def get_vm_details(request, vm_id):
+    print(f"Recibiendo solicitud para VM con ID: {vm_id}")
     try:
         # Comando para obtener los detalles de la VM usando govc
         command = [
             "govc",
             "vm.info",
             "-json",
-            vm_id  # Reemplazar con el ID de la VM
+            vm_id
         ]
         result = subprocess.run(command, capture_output=True, text=True, check=True)
         vm_info = result.stdout
 
-        # Parsear el resultado (ejemplo con JSON, ajusta según el formato de govc)
-        import json
+        # Parsear el resultado (verificar si es JSON válido)
         vm_data = json.loads(vm_info)
 
-        # Extraer datos relevantes
+        # Validar la estructura de los datos
+        if not vm_data.get("virtualMachines"):
+            raise ValueError("No se encontraron máquinas virtuales en la respuesta.")
+
+        # Extraer los datos relevantes
+        vm = vm_data["virtualMachines"][0]
+
+        storage_used = vm.get("storage", {}).get("committed", 0) // (1024 ** 3)  # Convertir a GB
+
         vm_details = {
-            "id": vm_id,
-            "size": vm_data["VirtualMachines"][0]["Storage"]["Uncommitted"] // (1024 ** 3),  # Tamaño en GB
-            "os": vm_data["VirtualMachines"][0]["Guest"]["GuestFullName"],
-            "cpu": f"{vm_data['VirtualMachines'][0]['Config']['Hardware']['NumCPU']} vCPU",
-            "memory": f"{vm_data['VirtualMachines'][0]['Config']['Hardware']['MemoryMB'] // 1024} GB",
+            "name": vm.get("name", "Desconocida"),
+            "os": vm.get("config", {}).get("guestFullName", "Desconocido"),
+            "cpu": vm.get("config", {}).get("hardware", {}).get("numCPU", 0),
+            "memory": f"{vm.get('config', {}).get('hardware', {}).get('memoryMB', 0) // 1024} GB",
+            "storage": f"{storage_used}",
         }
+
+        # Devolver los detalles como JSON
         return JsonResponse(vm_details)
+
     except subprocess.CalledProcessError as e:
         return JsonResponse({"error": f"Error al ejecutar govc: {e.stderr}"}, status=500)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "La salida de govc no es un JSON válido."}, status=500)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
-
 
 def execute_vm_script(request, vm):
     output = ''
