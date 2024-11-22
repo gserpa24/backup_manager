@@ -4,6 +4,8 @@
 
 El **Sistema de Backup** es una solución automatizada que permite realizar copias de seguridad de máquinas virtuales y restaurarlas en caso de fallos. Está diseñado para integrarse con entornos de virtualización como **VMware ESXi** y servidores **NAS** para la transferencia y almacenamiento de archivos. El sistema incluye funcionalidades de exportación de máquinas virtuales, verificación de integridad de archivos, compresión de datos y envío a servidores de almacenamiento remoto.
 
+**Documentacion:** https://gserpa24.github.io/backup_manager/
+
 ## Características
 
 - **Exportación de VMs**: Exporta máquinas virtuales en formatos OVF/OVA mediante `govc`.
