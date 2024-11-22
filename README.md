@@ -39,7 +39,10 @@ Si encuentras un problema:
      - Versión de Python.
      - Otros datos relevantes.
 
-
 ## Autores
 
 - **[Gustavo Luis Serpa Rengifo]** - Desarrollador principal - [GitHub][(https://github.com/gserpa24)]
+
+## Licencia
+
+Este proyecto está licenciado bajo la ["Licencia Apache 2.0"](). 
