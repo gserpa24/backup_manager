@@ -45,4 +45,4 @@ Si encuentras un problema:
 
 ## Licencia
 
-Este proyecto está licenciado bajo la ["Licencia Apache 2.0"](). 
+Este proyecto está licenciado bajo la ["Licencia Apache 2.0"](https://github.com/gserpa24/backup_manager/tree/main?tab=Apache-2.0-1-ov-file). 
