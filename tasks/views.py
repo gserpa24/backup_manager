@@ -108,14 +108,15 @@ def get_vm_details(request, vm_id):
         # Extraer los datos relevantes
         vm = vm_data["virtualMachines"][0]
 
-        storage_used = vm.get("storage", {}).get("committed", 0) // (1024 ** 3)  # Convertir a GB
+        # Tamaño ocupado (en GB)
+        committed_size = vm.get("summary", {}).get("storage", {}).get("committed", 0) // (1024 ** 3)
 
         vm_details = {
             "name": vm.get("name", "Desconocida"),
             "os": vm.get("config", {}).get("guestFullName", "Desconocido"),
             "cpu": vm.get("config", {}).get("hardware", {}).get("numCPU", 0),
             "memory": f"{vm.get('config', {}).get('hardware', {}).get('memoryMB', 0) // 1024} GB",
-            "storage": f"{storage_used}",
+            "storage": f"{committed_size} GB",
         }
 
         # Devolver los detalles como JSON
