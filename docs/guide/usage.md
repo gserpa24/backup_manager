@@ -27,18 +27,21 @@ Esta vista lista todas las máquinas virtuales disponibles en tu entorno. Para c
 ### **Funciones Disponibles:**
 
 **Lista de Máquinas Virtuales**:
+
    - Muestra el nombre de cada VM junto con información básica.
 
- **Botón "Verificar Estado"**:
-   - Al hacer clic, se abre un **modal** con información detallada de la máquina virtual seleccionada:
-     - Nombre de la máquina.
-     - Sistema operativo.
-     - Tamaño del disco.
-     - Número de CPUs.
-     - Memoria RAM.
-     - Estado actual (encendida/apagada/suspendida).
+**Botón "Verificar Estado"**:
 
- **Botón "Backup"**:
+- Al hacer clic, se abre un **modal** con información detallada de la máquina virtual seleccionada:
+  - Nombre de la máquina.
+  - Sistema operativo.
+  - Tamaño del disco.
+  - Número de CPUs.
+  - Memoria RAM.
+  - Estado actual (encendida/apagada/suspendida).
+
+**Botón "Backup"**:
+
    - Inicia el proceso de respaldo para la máquina virtual seleccionada.
    - Una vez finalizado el backup, el sistema almacena automáticamente un registro en la sección de **Reportes**.
 
@@ -65,24 +68,30 @@ Esta sección almacena un historial completo de los backups realizados, proporci
 
 ## **Cómo Usar el Sistema**
 
- **Inicio del Sistema**:
+**Inicio del Sistema**:
+
    - Accede al sistema desde el navegador ingresando la URL proporcionada.
 
- **Autenticacion de Usuario**:
+**Autenticacion de Usuario**:
+
    - Accede al sistema con las credenciales de acceso validas.
 
- **Monitorear el Estado del Anfitrión**:
+**Monitorear el Estado del Anfitrión**:
+
    - Ve a la vista principal para verificar que el anfitrión tenga suficientes recursos disponibles antes de realizar backups.
 
-3. **Realizar Backups**:
+**Realizar Backups**:
+
    - Ve a la lista de máquinas virtuales.
    - Encuentra la máquina deseada y presiona el botón **"Backup"**.
    - Monitorea el estado del proceso y espera la notificación de finalización.
 
-4. **Verificar el Estado de una VM**:
+**Verificar el Estado de una VM**:
+
    - En la misma lista, presiona el botón **"Estado"** de la máquina que deseas inspeccionar.
 
-5. **Revisar Reportes**:
+**Revisar Reportes**:
+
    - Dirígete a la sección de **Reportes** para consultar el historial de backups.
    - Filtra y descarga información según sea necesario.
 
