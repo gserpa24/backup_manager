@@ -168,54 +168,50 @@ def execute_vm_script(request, vm):
     vm_name = vm
     start_time = now()
 
-    # Decodificar la ruta de la VM
-    #vm_name = base64.urlsafe_b64decode(vm.encode()).decode()
-
     # Configurar variables de entorno para govc
     os.environ['GOVC_URL'] = settings.GOVC_URL
     os.environ['GOVC_USERNAME'] = settings.GOVC_USERNAME
     os.environ['GOVC_PASSWORD'] = settings.GOVC_PASSWORD
     os.environ['GOVC_INSECURE'] = settings.GOVC_INSECURE
 
-    # Verificar que las variables de entorno estén configuradas (para depuración)
-    print({vm_name: vm})
+    # Depuración: Verificar que las variables de entorno estén configuradas
+    print(f"Configuración de variables de entorno para {vm_name}: GOVC_URL={os.environ['GOVC_URL']}")
 
     try:
         # Apagar la VM
         power_off_cmd = ["govc", "vm.power", "-off", "-force", vm_name]
         result = subprocess.run(power_off_cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(f"Apagar VM: {result.stdout.decode().strip()}") #Mensaje de depuracion
+        print(f"Apagar VM: {result.stdout.decode().strip()}")
 
-        # Definir rutas y variables para la exportación
+        # Definir rutas para la exportación
         export_path = f"/tmp/{vm_name}"
         os.makedirs(export_path, exist_ok=True)
-        print(f"Directorio de exportacion creado: {export_path}")
+        print(f"Directorio de exportación creado: {export_path}")
 
         # Verificar si el archivo OVF ya existe
         ovf_file_path = os.path.join(export_path, f"{vm_name}/{vm_name}.ovf")
         if not os.path.exists(ovf_file_path):
             export_cmd = ["govc", "export.ovf", "-sha=256", "-vm", vm_name, export_path]
             result = subprocess.run(export_cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            print(f"Exportar OVF: {result.stdout.decode().strip()}")  # Mensaje de depuración
+            print(f"Exportar OVF: {result.stdout.decode().strip()}")
         else:
-            print(f"El archivo OVF ya existe: {ovf_file_path}. Saltando la exportación.")
+            print(f"El archivo OVF ya existe: {ovf_file_path}. Saltando exportación.")
 
         # Comprimir la exportación
         tar_file = f"/tmp/{vm_name}.tar.gz"
         tar_cmd = ["tar", "-czvf", tar_file, "-C", export_path, "."]
         result = subprocess.run(tar_cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(f"Comprimir: {result.stdout.decode().strip()}")  # Mensaje de depuración
+        print(f"Comprimir archivo: {result.stdout.decode().strip()}")
 
-        print(f"Ruta del archivo tar: {tar_file}")  # Imprimir la ruta del archivo tar
+        print(f"Ruta del archivo tar: {tar_file}")
 
-        #Tamaño de archivo exportado
+        # Verificar el tamaño del archivo exportado
         vm_size = os.stat(tar_file).st_size
 
-
-        #Tiempo de ejecucion
+        # Calcular el tiempo de ejecución
         execution_time = now() - start_time
 
-        #Registrar respaldo en bd
+        # Registrar respaldo en la base de datos
         backup = Backup.objects.create(
             vm_name=vm_name,
             user=request.user,
@@ -224,16 +220,12 @@ def execute_vm_script(request, vm):
             backup_file_path=tar_file,
             success=True,
         )
-        print(f"Respaldo registardo: {backup}")
+        print(f"Respaldo registrado: {backup}")
 
+        # Cambiar al directorio temporal y enviar al NAS
         os.chdir("/tmp")
-        # Enviar el archivo al NAS
-        nas_path = "//192.168.50.6/Public"  # Reemplaza con la IP y carpeta del NAS
+        nas_path = "//192.168.50.6/Public"  # Cambia con la ruta de tu NAS
         tar = f"/tmp/{vm_name}.tar.gz"
-        #nas_user = "<usuario_nas>"  # Reemplaza con el usuario NAS
-        #nas_pass = "<password_nas>"  # Reemplaza con la contraseña NAS
-
-        # print("Directorio de trabajo actual:", os.getcwd())
 
         if not os.path.exists(tar):
             print(f"El archivo {tar} no existe.")
@@ -241,36 +233,45 @@ def execute_vm_script(request, vm):
             smb_cmd = ["smbclient", nas_path, "-N", "-c", f"put {vm_name}.tar.gz"]
             try:
                 result = subprocess.run(smb_cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                print(f"Enviado al NAS {result.stdout.decode().strip()}")  # Mensaje de depuración
+                print(f"Archivo enviado al NAS {result.stdout.decode().strip()}")
             except subprocess.CalledProcessError as e:
-                print(f"Error al enviar al NAS {e.stderr.decode().strip()}")
+                error = f"Error al enviar al NAS {e.stderr.decode().strip()}"
+                print(error)
 
         # Limpiar archivos temporales
         subprocess.run(["rm", "-rf", export_path], check=True)
         subprocess.run(["rm", "-f", tar_file], check=True)
 
-        #Encender vm
+        # Encender la VM
         power_on_cmd = ["govc", "vm.power", "-on", vm_name]
         result = subprocess.run(power_on_cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(f"Encender VM: {result.stdout.decode().strip()}")  # Mensaje de depuracion
+        print(f"Encender VM: {result.stdout.decode().strip()}")
 
         output = "Proceso completado con éxito."
 
+        # Responder con éxito
+        return JsonResponse({'success': True, 'message': output})
+
     except subprocess.CalledProcessError as e:
+        # Capturar el error y crear un registro de respaldo fallido
         output = "Error en el proceso."
-        error = f"Comando fallido: {e.cmd}. Salida de error: {e.stderr}"
+        error = f"Comando fallido: {e.cmd}. Salida de error: {e.stderr.decode().strip()}"
 
         backup = Backup.objects.create(
             vm_name=vm_name,
             user=request.user,
             execution_time=now() - start_time,
             vm_size=0,
-            backup_file_path=tar_file,
+            backup_file_path="",
             success=False,
             error_message=error,
         )
 
-    return render(request, 'execute_vm_script.html', {'output': output, 'error': error})
+        print(f"Error durante el proceso: {error}")
+
+        # Responder con error
+        return JsonResponse({'success': False, 'error': error})
+    # return render(request, 'execute_vm_script.html', {'output': output, 'error': error})
 
 @login_required
 def backup_reports(request):

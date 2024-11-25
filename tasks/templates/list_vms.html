@@ -33,7 +33,7 @@
                 <button onclick="loadVMData('{{ vm }}')" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
                   Ver Detalles
                 </button>
-                
+
                 <!-- Formulario para ejecutar la vista execute_vm_script -->
                 <form action="{% url 'execute_vm_script' vm %}" method="post">
                   {% csrf_token %}
@@ -49,19 +49,26 @@
     </table>
   {% endif %}
 
-  <!-- Modal para mostrar detalles de la VM -->
-  <div id="vmModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
-    <div class="bg-white p-6 rounded shadow-lg w-1/3">
-      <h2 class="text-xl font-bold mb-4">Detalles de la Máquina Virtual</h2>
-      <div>
-        <p><strong>Nombre:</strong> <span id="vmName"></span></p>
-        <p><strong>Sistema Operativo:</strong> <span id="vmOs"></span></p>
-        <p><strong>Tamaño:</strong> <span id="vmSize"></span></p>
-        <p><strong>CPU:</strong> <span id="vmCpu"></span> Cores</p>
-        <p><strong>Memoria:</strong> <span id="vmMemory"></span></p>
+  <!-- Modal de Carga -->
+  <div id="loadingModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-6 rounded shadow-lg">
+      <h2 class="text-xl font-bold mb-4">Realizando Backup...</h2>
+      <p>Por favor, espere mientras se realiza el proceso.</p>
+      <div class="mt-4 flex justify-center items-center">
+        <div class="spinner-border animate-spin text-blue-500" role="status">
+          <span class="sr-only">Cargando...</span>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Modal de Resultado -->
+  <div id="resultModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-6 rounded shadow-lg">
+      <h2 class="text-xl font-bold mb-4" id="processStatus">Estado del Proceso</h2>
+      <p id="errorMessage" class="text-red-500 hidden"></p>
       <div class="mt-4">
-        <button onclick="closeModal()" class="bg-red-500 text-white px-4 py-2 rounded">
+        <button id="closeBtn" class="bg-red-500 text-white px-4 py-2 rounded flex justify-center items-center">
           Cerrar
         </button>
       </div>
@@ -94,5 +101,57 @@
     // Cerrar el modal
     document.getElementById('vmModal').style.display = 'none';
   }
+  
+  // Mostrar el modal de carga
+  function showLoading() {
+    document.getElementById('loadingModal').classList.remove('hidden');
+    document.getElementById('resultModal').classList.add('hidden');
+  }
+
+  // Mostrar el modal de resultado con el estado del proceso
+  function showResult(status, error = '') {
+    document.getElementById('loadingModal').classList.add('hidden');
+    document.getElementById('resultModal').classList.remove('hidden');
+    
+    if (status === 'success') {
+      document.getElementById('processStatus').innerText = 'Proceso completado con éxito';
+      document.getElementById('errorMessage').classList.add('hidden');
+    } else {
+      document.getElementById('processStatus').innerText = 'Error en el proceso';
+      document.getElementById('errorMessage').innerText = error;
+      document.getElementById('errorMessage').classList.remove('hidden');
+    }
+  }
+
+  // Manejo de la respuesta del formulario de backup
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();  // Prevenir el envío por defecto del formulario
+      showLoading();  // Mostrar el modal de carga
+
+      const formData = new FormData(this);
+      
+      fetch(this.action, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showResult('success');
+        } else {
+          showResult('error', data.error);
+        }
+      })
+      .catch(error => {
+        showResult('error', error.message);
+      });
+    });
+  });
+
+  // Cerrar modal de resultado
+  document.getElementById('closeBtn').addEventListener('click', function() {
+    document.getElementById('resultModal').classList.add('hidden');
+  });
 </script>
 {% endblock %}
