@@ -53,6 +53,7 @@ def home(request):
     }
     return render(request, 'home.html', context)
 
+@login_required
 def get_stats(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         # Lógica de datos como antes
@@ -83,6 +84,7 @@ def get_stats(request):
     # Redirigir a la página principal si no es AJAX
     return redirect('home')
 
+@login_required
 def list_vms_view(request):
     output = ''
     error = ''
@@ -114,7 +116,7 @@ def list_vms_view(request):
 
     return render(request, 'list_vms.html', {'vms': vms, 'error': error})
 
-@csrf_exempt
+@login_required
 def get_vm_details(request, vm_id):
     print(f"Recibiendo solicitud para VM con ID: {vm_id}")
     try:
@@ -159,6 +161,7 @@ def get_vm_details(request, vm_id):
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
 
+@login_required
 def execute_vm_script(request, vm):
     output = ''
     error = ''
@@ -269,6 +272,7 @@ def execute_vm_script(request, vm):
 
     return render(request, 'execute_vm_script.html', {'output': output, 'error': error})
 
+@login_required
 def backup_reports(request):
     backups = Backup.objects.all().order_by('-backup_date')
 
