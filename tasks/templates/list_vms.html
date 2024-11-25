@@ -48,8 +48,25 @@
       </tbody>
     </table>
   {% endif %}
-
-  <!-- Modal de Carga -->
+ <!-- Modal para mostrar detalles de la VM -->
+  <div id="vmModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
+    <div class="bg-white p-6 rounded shadow-lg w-1/3">
+      <h2 class="text-xl font-bold mb-4">Detalles de la Máquina Virtual</h2>
+      <div>
+        <p><strong>Nombre:</strong> <span id="vmName"></span></p>
+        <p><strong>Sistema Operativo:</strong> <span id="vmOs"></span></p>
+        <p><strong>Tamaño:</strong> <span id="vmSize"></span> GB</p>
+        <p><strong>CPU:</strong> <span id="vmCpu"></span> Cores</p>
+        <p><strong>Memoria:</strong> <span id="vmMemory"></span></p>
+      </div>
+      <div class="mt-4">
+        <button onclick="closeModal()" class="bg-red-500 text-white px-4 py-2 rounded">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+<!-- Modal de Carga -->
   <div id="loadingModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
     <div class="bg-white p-6 rounded shadow-lg">
       <h2 class="text-xl font-bold mb-4">Realizando Backup...</h2>
