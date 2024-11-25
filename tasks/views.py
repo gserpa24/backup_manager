@@ -216,6 +216,11 @@ def execute_vm_script(request, vm):
         subprocess.run(["rm", "-rf", export_path], check=True)
         subprocess.run(["rm", "-f", tar_file], check=True)
 
+        #Encender vm
+        power_on_cmd = ["govc", "vm.power", "-on", vm_name]
+        result = subprocess.run(power_on_cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(f"Encender VM: {result.stdout.decode().strip()}")  # Mensaje de depuracion
+
         output = "Proceso completado con éxito."
 
     except subprocess.CalledProcessError as e:
