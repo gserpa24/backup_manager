@@ -5,6 +5,7 @@ import subprocess
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.utils.timezone import now
 from tasks.models import Backup
 from django.http import HttpResponse, JsonResponse
@@ -53,29 +54,34 @@ def home(request):
     return render(request, 'home.html', context)
 
 def get_stats(request):
-    disk_usage = psutil.disk_usage('/')
-    memory = psutil.virtual_memory()
-    net_io = psutil.net_io_counters()
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        # Lógica de datos como antes
+        disk_usage = psutil.disk_usage('/')
+        memory = psutil.virtual_memory()
+        net_io = psutil.net_io_counters()
 
-    data = {
-        'disk': {
-            'total': disk_usage.total // (1024 ** 3),  # GB
-            'used': disk_usage.used // (1024 ** 3),  # GB
-            'free': disk_usage.free // (1024 ** 3),  # GB
-            'percent': disk_usage.percent,
-        },
-        'ram': {
-            'total': memory.total // (1024 ** 2),  # MB
-            'used': memory.used // (1024 ** 2),  # MB
-            'free': memory.available // (1024 ** 2),  # MB
-            'percent': memory.percent,
-        },
-        'network': {
-            'sent': net_io.bytes_sent // (1024 ** 2),  # MB
-            'received': net_io.bytes_recv // (1024 ** 2),  # MB
+        data = {
+            'disk': {
+                'total': disk_usage.total // (1024 ** 3),  # GB
+                'used': disk_usage.used // (1024 ** 3),  # GB
+                'free': disk_usage.free // (1024 ** 3),  # GB
+                'percent': disk_usage.percent,
+            },
+            'ram': {
+                'total': memory.total // (1024 ** 2),  # MB
+                'used': memory.used // (1024 ** 2),  # MB
+                'free': memory.available // (1024 ** 2),  # MB
+                'percent': memory.percent,
+            },
+            'network': {
+                'sent': net_io.bytes_sent // (1024 ** 2),  # MB
+                'received': net_io.bytes_recv // (1024 ** 2),  # MB
+            }
         }
-    }
-    return JsonResponse(data)
+        return JsonResponse(data)
+
+    # Redirigir a la página principal si no es AJAX
+    return redirect('home')
 
 def list_vms_view(request):
     output = ''
