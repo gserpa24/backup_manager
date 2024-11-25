@@ -8,31 +8,60 @@
     <!-- Uso de Disco -->
     <div class="mb-8">
         <h2 class="text-xl font-semibold">Disco</h2>
-        <p>Total: {{ disk.total }} GB</p>
-        <p>Usado: {{ disk.used }} GB ({{ disk.percent }}%)</p>
-        <p>Libre: {{ disk.free }} GB</p>
+        <p>Total: <span id="disk-total">{{ disk.total }}</span> GB</p>
+        <p>Usado: <span id="disk-used">{{ disk.used }}</span> GB (<span id="disk-percent">{{ disk.percent }}</span>%)</p>
+        <p>Libre: <span id="disk-free">{{ disk.free }}</span> GB</p>
         <div class="w-full bg-gray-200 rounded-full h-4 mt-2">
-            <div class="bg-blue-600 h-4 rounded-full" style="width: {{ disk.percent }}%"></div>
+            <div id="disk-bar" class="bg-blue-600 h-4 rounded-full" style="width: {{ disk.percent }}%"></div>
         </div>
     </div>
 
     <!-- Uso de RAM -->
     <div class="mb-8">
         <h2 class="text-xl font-semibold">RAM</h2>
-        <p>Total: {{ ram.total }} MB</p>
-        <p>Usado: {{ ram.used }} MB ({{ ram.percent }}%)</p>
-        <p>Libre: {{ ram.free }} MB</p>
+        <p>Total: <span id="ram-total">{{ ram.total }}</span> MB</p>
+        <p>Usado: <span id="ram-used">{{ ram.used }}</span> MB (<span id="ram-percent">{{ ram.percent }}</span>%)</p>
+        <p>Libre: <span id="ram-free">{{ ram.free }}</span> MB</p>
         <div class="w-full bg-gray-200 rounded-full h-4 mt-2">
-            <div class="bg-green-600 h-4 rounded-full" style="width: {{ ram.percent }}%"></div>
+            <div id="ram-bar" class="bg-green-600 h-4 rounded-full" style="width: {{ ram.percent }}%"></div>
         </div>
     </div>
 
     <!-- Uso de Red -->
     <div>
         <h2 class="text-xl font-semibold">Red</h2>
-        <p>Enviado: {{ network.sent }} MB</p>
-        <p>Recibido: {{ network.received }} MB</p>
+        <p>Enviado: <span id="net-sent">{{ network.sent }}</span> MB</p>
+        <p>Recibido: <span id="net-received">{{ network.received }}</span> MB</p>
     </div>
 </div>
-{% endblock %}
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function updateStats() {
+    fetch("{% url 'get_stats' %}")
+        .then(response => response.json())
+        .then(data => {
+            // Actualizar Disco
+            document.getElementById('disk-total').textContent = `${data.disk.total} GB`;
+            document.getElementById('disk-used').textContent = `${data.disk.used} GB (${data.disk.percent}%)`;
+            document.getElementById('disk-free').textContent = `${data.disk.free} GB`;
+            document.getElementById('disk-bar').style.width = `${data.disk.percent}%`;
+
+            // Actualizar RAM
+            document.getElementById('ram-total').textContent = `${data.ram.total} MB`;
+            document.getElementById('ram-used').textContent = `${data.ram.used} MB (${data.ram.percent}%)`;
+            document.getElementById('ram-free').textContent = `${data.ram.free} MB`;
+            document.getElementById('ram-bar').style.width = `${data.ram.percent}%`;
+
+            // Actualizar Red
+            document.getElementById('net-sent').textContent = `${data.network.sent} MB`;
+            document.getElementById('net-received').textContent = `${data.network.received} MB`;
+        });
+}
+
+// Ejecutar al inicio y cada 5 segundos
+updateStats();
+setInterval(updateStats, 20000);
+
+</script>
+{% endblock %}

@@ -52,6 +52,30 @@ def home(request):
     }
     return render(request, 'home.html', context)
 
+def get_stats(request):
+    disk_usage = psutil.disk_usage('/')
+    memory = psutil.virtual_memory()
+    net_io = psutil.net_io_counters()
+
+    data = {
+        'disk': {
+            'total': disk_usage.total // (1024 ** 3),  # GB
+            'used': disk_usage.used // (1024 ** 3),  # GB
+            'free': disk_usage.free // (1024 ** 3),  # GB
+            'percent': disk_usage.percent,
+        },
+        'ram': {
+            'total': memory.total // (1024 ** 2),  # MB
+            'used': memory.used // (1024 ** 2),  # MB
+            'free': memory.available // (1024 ** 2),  # MB
+            'percent': memory.percent,
+        },
+        'network': {
+            'sent': net_io.bytes_sent // (1024 ** 2),  # MB
+            'received': net_io.bytes_recv // (1024 ** 2),  # MB
+        }
+    }
+    return JsonResponse(data)
 
 def list_vms_view(request):
     output = ''
