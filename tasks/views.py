@@ -208,9 +208,9 @@ def execute_vm_script(request, vm):
             smb_cmd = ["smbclient", nas_path, "-N", "-c", f"put {vm_name}.tar.gz"]
             try:
                 result = subprocess.run(smb_cmd, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                print(f"Enviar al NAS: {result.stdout.decode().strip()}")  # Mensaje de depuración
+                print(f"Enviado al NAS {result.stdout.decode().strip()}")  # Mensaje de depuración
             except subprocess.CalledProcessError as e:
-                print(f"Error al enviar al NAS: {e.stderr.decode().strip()}")
+                print(f"Error al enviar al NAS {e.stderr.decode().strip()}")
 
         # Limpiar archivos temporales
         subprocess.run(["rm", "-rf", export_path], check=True)
