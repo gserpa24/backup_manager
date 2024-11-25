@@ -44,5 +44,6 @@ nav:
   - Guía:
       - Instalación: guide/installation.md
       - Uso: guide/usage.md
+      - Restablecer: guide/restablecer.md
   - Configuracion Avanzada: advanced/configuration.md
   - FAQ: faq.md
